@@ -6,7 +6,7 @@ async function main() {
   const deployerAddress = await deployer.getAddress();
   console.log('Deploying Gallery Contract with address:', deployerAddress);
 
-  const JungelTycoon = await hre.ethers.getContractFactory("JungelTycoon", "JT", "AE2QU4T", "H8YOP9WCV");
+  const JungelTycoon = await hre.ethers.getContractFactory("JungelTycoon");
   const JTT = await hre.ethers.getContractFactory("JTT");
   const Gallery = await hre.ethers.getContractFactory("Gallery");
   
