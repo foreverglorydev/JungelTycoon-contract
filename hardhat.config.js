@@ -1,38 +1,88 @@
-// require('@nomiclabs/hardhat-waffle');
-
-// module.exports = {
-//   solidity: '0.8.11',
-//   networks: {
-//     rinkeby: {
-//       url: 'https://eth-rinkeby.alchemyapi.io/v2/nXTtoXZd49GQtRbsze7zOtdVbw3LaBmE',
-//       accounts: ['f583eee4a8538439de90ae8b88fb36d95ad19ea5c121eef70e86c0105c321975'],
-//     },
-//   },
-// };
-
-
-
-require("@nomiclabs/hardhat-etherscan");
+require('dotenv').config();
 require("@nomiclabs/hardhat-waffle");
-require("dotenv").config();
+require("@nomiclabs/hardhat-etherscan");
+require('hardhat-gas-reporter');
 
+// This is a sample Hardhat task. To learn how to create your own go to
+// https://hardhat.org/guides/create-task.html
+task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
+  const accounts = await hre.ethers.getSigners();
+
+  for (const account of accounts) {
+    console.log(account.address);
+  }
+});
+
+// You need to export an object to set up your config
+// Go to https://hardhat.org/config/ to learn more
+
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+/**
+ * @type import('hardhat/config').HardhatUserConfig
+ */
 module.exports = {
-  solidity: "0.8.11",
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: "HKYDVZGY81P4UCZ16ARZH2K39QHZQQEHSH",
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    },
   },
+
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
+
+  mocha: {
+    timeout: 20000
+  },
+
+  gasReporter: {
+    currency: 'USD',
+    enabled: false,
+    gasPrice: 50,
+  },
+
   networks: {
-    rinkeby: {
-      url: process.env.STAGING_ALCHEMY_KEY,
-      accounts: [process.env.PRIVATE_KEY],
-    },
     mainnet: {
+      url: `https://mainnet.infura.io/v3/084e5c1f291642d5a9cffad25a1954c8`,
       chainId: 1,
-      url: process.env.PROD_ALCHEMY_KEY,
-      accounts: [process.env.PRIVATE_KEY],
+      
+      accounts: [`0x${PRIVATE_KEY}`]
     },
-    
+
+    kovan: {
+      url: `https://kovan.infura.io/v3/084e5c1f291642d5a9cffad25a1954c8`,
+      chainId: 42,
+
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
+
+    rinkeby: {
+      url: `https://rinkeby.infura.io/v3/084e5c1f291642d5a9cffad25a1954c8`,
+      chainId: 4,
+      
+      accounts: [`0x${PRIVATE_KEY}`],
+      gasLimit: 10000000000,
+    },
+
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/084e5c1f291642d5a9cffad25a1954c8`,
+      chainId: 3,
+      
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
+
+    localhost: {
+      url: `http://127.0.0.1:8545`
+    },
+  },
+    etherscan: {
+      apiKey: process.env.ETHERSCAN_KEY,
   },
 };

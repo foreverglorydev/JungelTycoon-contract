@@ -2060,21 +2060,6 @@ contract JungelTycoon is ERC721Enumerable, Ownable {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 pragma solidity ^0.8.0;
 
 /**
@@ -2576,6 +2561,7 @@ contract JTT is ERC20, Ownable {
   function removeController(address controller) external onlyOwner {
     controllers[controller] = false;
   }
+
 }
 
 
@@ -2584,7 +2570,7 @@ pragma solidity ^0.8.0;
 contract Gallery is Ownable, IERC721Receiver {
     
     // contract events
-    // event TokenStaked(address _account, uint256[] _stackTime);
+    // event TokenStaked(address _account, uint256 _stackTime);
     // event TokenUnstaked(address _account, uint256 _result);
 
     // reference to the JungelTycoon NFT contract
@@ -2596,10 +2582,9 @@ contract Gallery is Ownable, IERC721Receiver {
     // maps tokenId to startTime to stack
     mapping(uint256 => uint256) public stackTime;
 
-    uint256 public JTTPerNFT = 0; 
-
-    uint256[] public unstackDate = [[7, 4.5], [15, 6.75], [30, 9], [45, 10]];
-
+    // uint256 public JTTPerNFT = 0; 
+    // uint256[2][4] public unstackDate = [[7, 450], [15, 675], [30, 900], [45, 1000]];
+    uint256[][] public unstackDate = [[7, 450], [15, 675], [30, 900], [45, 1000]];
 
     // uint256 public totalJTTEarned;
     // uint256 public unaccountedRewards = 0; 
@@ -2633,7 +2618,7 @@ contract Gallery is Ownable, IERC721Receiver {
                 continue; // there may be gaps in the array for stolen tokens
             }
         }
-        // emit TokenStaked(address account, uint256[] stackTime);
+        // emit TokenStaked(address account, uint256 stackTime);
     } 
 
     /** CLAIMING / UNSTAKING
@@ -2642,7 +2627,10 @@ contract Gallery is Ownable, IERC721Receiver {
     */
     function claimFromGallery(uint16[] calldata tokenIds, bool unstake) external {
         require(!(jungle.paused()), "CONTRACT STOPPED");
-        
+        // unstackDate.push([7, 450]);
+        // unstackDate.push([15, 675]);
+        // unstackDate.push([30, 900]);
+        // unstackDate.push([45, 1000]);
         if(unstake) {
             for (uint i = 0; i < tokenIds.length; i++) {
                 uint period = (block.timestamp - stackTime[i])/86400;
@@ -2672,6 +2660,8 @@ contract Gallery is Ownable, IERC721Receiver {
         }   
         // emit TokenUnstaked(address account, uint256 result);
     }
+
+    // receive() external payable {}
 
     function onERC721Received(
             address,
