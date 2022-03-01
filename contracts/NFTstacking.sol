@@ -853,7 +853,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         uint256 tokenId
     ) public virtual override {
         //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        // require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved!!!!!!!!!!!");
 
         _transfer(from, to, tokenId);
     }
@@ -1946,7 +1946,7 @@ contract JungelTycoon is ERC721Enumerable, Ownable {
         require(msg.value >= cost * _mintAmount, "insufficient funds");
     }
 
-    for (uint256 i = 1; i <= _mintAmount; i++) {
+    for (uint256 i = 0; i < _mintAmount; i++) {
       addressMintedBalance[msg.sender]++;
       _safeMint(msg.sender, supply + i);
     }
@@ -2602,17 +2602,21 @@ contract Gallery is Ownable, IERC721Receiver {
         jtt = JTT(_jtt);
     }
 
+
+
     /** STAKING
     * adds JungelTycoon NFTs to the Gallery
     * @param account the address of the staker
     * @param tokenIds the IDs of the NFTs to stake
     */
     function addToGallery(address account, uint16[] calldata tokenIds) external {
-        require(account == _msgSender() || _msgSender() == address(jungle), "DON'T GIVE YOUR TOKENS AWAY");
+        require(account == msg.sender || msg.sender == address(jungle), "DON'T GIVE YOUR TOKENS AWAY");
         for (uint i = 0; i < tokenIds.length; i++) {
-            if (_msgSender() != address(jungle)) { // don't do this step if its a mint + stake
-                require(jungle.ownerOf(tokenIds[i]) == _msgSender(), "AINT YO TOKEN");
-                jungle.transferFrom(_msgSender(), address(this), tokenIds[i]);
+            if (msg.sender != address(jungle)) { // don't do this step if its a mint + stake
+                require(jungle.ownerOf(tokenIds[i]) == msg.sender, "AINT YO TOKEN");
+
+                jungle.transferFrom(msg.sender, address(this), tokenIds[i]);
+                
                 stackTime[i] = block.timestamp;
             } else if (tokenIds[i] == 0) {
                 continue; // there may be gaps in the array for stolen tokens
@@ -2627,10 +2631,7 @@ contract Gallery is Ownable, IERC721Receiver {
     */
     function claimFromGallery(uint16[] calldata tokenIds, bool unstake) external {
         require(!(jungle.paused()), "CONTRACT STOPPED");
-        // unstackDate.push([7, 450]);
-        // unstackDate.push([15, 675]);
-        // unstackDate.push([30, 900]);
-        // unstackDate.push([45, 1000]);
+        
         if(unstake) {
             for (uint i = 0; i < tokenIds.length; i++) {
                 uint period = (block.timestamp - stackTime[i])/86400;
@@ -2652,7 +2653,7 @@ contract Gallery is Ownable, IERC721Receiver {
                         }
                     }
                     jungle.safeTransferFrom(address(this), _msgSender(), tokenIds[i], ""); // send back NFTs
-                    jtt.mint(_msgSender(), result);
+                    jtt.mint(_msgSender(), result/100);
                     // jtt.transferFrom(fromAddress, _msgSender(), result);
                     break;
                 }

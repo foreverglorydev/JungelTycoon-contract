@@ -18,6 +18,18 @@ async function main() {
 
   const gallery = await Gallery.deploy(jungelTycoon.address, jTT.address);
   console.log('Gallery contract deployed at', gallery.address);
+
+  let tokenIds = [1, 2, 3, 4, 5];
+  console.log(deployerAddress);
+  try {
+    const testResult = await gallery.addToGallery(deployerAddress, tokenIds);
+    console.log(testResult);
+  }catch (error) {
+    console.error(error);
+  }
+
+
+  
 }
 
 main()

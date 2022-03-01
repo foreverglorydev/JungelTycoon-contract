@@ -68,7 +68,6 @@ module.exports = {
       chainId: 4,
       
       accounts: [`0x${PRIVATE_KEY}`],
-      gasLimit: 10000000000,
     },
 
     ropsten: {
@@ -82,7 +81,10 @@ module.exports = {
       url: `http://127.0.0.1:8545`
     },
   },
-    etherscan: {
-      apiKey: process.env.ETHERSCAN_KEY,
+
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: process.env.ETHERSCAN_API_KEY
   },
 };
